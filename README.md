@@ -17,3 +17,5 @@ The package provides 2 interactive functions:
 
 These functions work on text selection or, if not provided, on the
 current paragraph.
+
+**License**: GPL
