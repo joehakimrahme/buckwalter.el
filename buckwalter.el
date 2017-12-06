@@ -1,4 +1,4 @@
-;;; buckwalter-arabic.el --- Write arabic using Buckwalter transliteration
+;;; buckwalter.el --- Write arabic using Buckwalter transliteration
 
 ;; Copyright (C) 2017 Joe HAKIM RAHME <joehakimrahme@gmail.com>
 
@@ -44,26 +44,22 @@
     ("u" . "ُ")("i" . "ِ") ("~" . "ّ") ("o" . "ْ") ("`" . "ٰ") ("{" . "ٱ")
     ("?" . "؟") ("," . "،")))
 
-;; reverse the alist
-(defvar unicode-to-buckwalter
-  (mapcar (lambda (x) (cons (cdr x) (car x))) buckwalter-to-unicode))
-
 ;; originally taken from s.el. The function is modified to avoid tripping
 ;; on case-fold-search
-(defun b2ar-replace-all (replacements s)
+(defun buckwalter-replace-all (replacements s)
   (let ((case-fold-search nil))
     (replace-regexp-in-string (regexp-opt (mapcar 'car replacements))
                               (lambda (it) (cdr (assoc-string it replacements)))
                               s nil nil)))
 
 ;;;###autoload
-(defun buckwalter-transliterate ($string &optional $from $to)
+(defun buckwalter-transliterate (string &optional from to)
   "Replace latin letters with arabic using the Buckwalter transliteration.
 
 When called interactively, work on current paragraph or text selection.
 
-When called in Lisp code, if $STRING is non-nil, returns a changed string.
-If `string` nil, change the text in the region between positions `from` `to`.
+When called in Lisp code, if STRING is non-nil, returns a changed string.
+If STRING nil, change the text in the region between positions FROM and TO.
 
 More detailed info on the Buckwalter transliteration can be found here:
 http://www.qamus.org/transliteration.htm"
@@ -72,25 +68,26 @@ http://www.qamus.org/transliteration.htm"
        (list nil (region-beginning) (region-end))
      (let ((bds (bounds-of-thing-at-point 'paragraph)))
        (list nil (car bds) (cdr bds)))))
-  (let (workOnStringP inputStr outputStr)
-    (setq workOnStringP (if $string t nil))
-    (setq inputStr (if workOnStringP $string (buffer-substring-no-properties $from $to)))
-    (setq outputStr (b2ar-replace-all buckwalter-to-unicode inputStr))
-    (if workOnStringP
-        outputStr
+  (let (work-on-string-p input-str output-str)
+    (setq work-on-string-p (if string t nil))
+    (setq input-str (if work-on-string-p string (buffer-substring-no-properties from to)))
+    (setq output-str (buckwalter-replace-all buckwalter-to-unicode input-str))
+    (setq unicode-to-buckwalter (mapcar (lambda (x) (cons (cdr x) (car x))) buckwalter-to-unicode))
+    (if work-on-string-p
+        output-str
       (save-excursion
-        (delete-region $from $to)
-        (goto-char $from)
-          (insert outputStr)))))
+        (delete-region from to)
+        (goto-char from)
+          (insert output-str)))))
 
 ;;;###autoload
-(defun buckwalter-transliterate-reverse ($string &optional $from $to)
+(defun buckwalter-transliterate-reverse (string &optional from to)
   "Replace arabic letters with latin using the Buckwalter transliteration.
 
 When called interactively, work on current paragraph or text selection.
 
-When called in Lisp code, if $STRING is non-nil, returns a changed string.
-If `string` nil, change the text in the region between positions `from` `to`.
+When called in Lisp code, if STRING is non-nil, returns a changed string.
+If STRING nil, change the text in the region between positions FROM and TO.
 
 More detailed info on the Buckwalter transliteration can be found here:
 http://www.qamus.org/transliteration.htm"
@@ -99,16 +96,16 @@ http://www.qamus.org/transliteration.htm"
        (list nil (region-beginning) (region-end))
      (let ((bds (bounds-of-thing-at-point 'paragraph)))
        (list nil (car bds) (cdr bds)))))
-  (let (workOnStringP inputStr outputStr)
-    (setq workOnStringP (if $string t nil))
-    (setq inputStr (if workOnStringP $string (buffer-substring-no-properties $from $to)))
-    (setq outputStr (b2ar-replace-all unicode-to-buckwalter inputStr))
-    (if workOnStringP
-        outputStr
+  (let (work-on-string-p input-str output-str)
+    (setq work-on-string-p (if string t nil))
+    (setq input-str (if work-on-string-p string (buffer-substring-no-properties from to)))
+    (setq output-str (buckwalter-replace-all unicode-to-buckwalter input-str))
+    (if work-on-string-p
+        output-str
       (save-excursion
-        (delete-region $from $to)
-        (goto-char $from)
-        (insert outputStr)))))
+        (delete-region from to)
+        (goto-char from)
+        (insert output-str)))))
 
-(provide 'buckwalter-arabic)
-;;; buckwalter-arabic.el ends here
+(provide 'buckwalter)
+;;; buckwalter.el ends here
