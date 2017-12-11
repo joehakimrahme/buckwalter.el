@@ -1,5 +1,5 @@
-Buckwalter-arabic.el
-----------------------
+Buckwalter.el
+=============
 
  هاي عَالَم
 
