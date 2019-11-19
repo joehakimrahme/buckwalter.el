@@ -116,5 +116,11 @@ http://www.qamus.org/transliteration.htm"
         (goto-char from)
         (insert output-str)))))
 
+;;;###autoload
+(defun buckwalter-table ()
+  "Displays the buckwalter-unicode conversion table for reference"
+  (interactive)
+  (describe-variable 'buckwalter-to-unicode))
+
 (provide 'buckwalter)
 ;;; buckwalter.el ends here
