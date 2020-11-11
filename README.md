@@ -1,3 +1,5 @@
+[![MELPA](https://melpa.org/packages/buckwalter-badge.svg)](https://melpa.org/#/buckwalter)
+
 Buckwalter.el
 =============
 
